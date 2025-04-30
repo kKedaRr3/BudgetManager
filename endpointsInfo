@@ -1,0 +1,13 @@
+🔐 Autoryzacja
+POST   /api/auth/register         - Rejestracja nowego użytkownika
+POST   /api/auth/login            - Logowanie i otrzymanie tokena JWT
+
+GET /users zwraca wszystkich uzytkownikow
+GET PUT DELETE /users/<id> operacje na konkretnym urzytkowniku
+
+GET /categories/<userId> zwraca kategorie konkretnrgo urzytkownika
+GET POST PUT DELETE /categories/<userId>/<categoryId> modyfikuje konkretna kategorie konkretnego uzytkoniwka
+
+GET /transactions/<userId>/<categoryId> zwraca wszystkie transakcje konkretnego uzytkownika i konkretnej kategorii
+
+GET PUT DELETE POST /transactions/<userId>/<categoryId>/<transactionId> modyfikuje konkretna transakcje konkretnego urzytkownika i jego konkretnej kategorii
