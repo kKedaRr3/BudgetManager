@@ -6,6 +6,8 @@ import org.example.budgetmanager.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/users")
@@ -15,7 +17,7 @@ public class UserController {
 
 //    Useless
     @GetMapping("")
-    public ResponseEntity<Iterable<AppUser>> getUsers() {
+    public ResponseEntity<List<AppUser>> getUsers() {
         var userList = userService.findAll();
         if (userList.isEmpty()) {
             return ResponseEntity.notFound().build();

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +22,9 @@ public class Category {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser appUser;
+
+    @OneToMany
+    @JoinColumn(name = "transaction_id")
+    private List<Transaction> transactions;
 
 }
