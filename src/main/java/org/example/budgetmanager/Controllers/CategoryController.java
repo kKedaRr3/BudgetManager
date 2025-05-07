@@ -53,14 +53,15 @@ public class CategoryController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody Category category) {
         AppUser user = getLoggedInUser();
 
         Category categoryToAdd = new Category();
-        categoryToAdd.setName(categoryDto.getName());
+        categoryToAdd.setName(category.getName());
         categoryToAdd.setUser(user);
 
         categoryService.save(categoryToAdd);
+        CategoryDto categoryDto = new CategoryDto(categoryToAdd.getId(), categoryToAdd.getName());
         return ResponseEntity.ok(categoryDto);
     }
 
