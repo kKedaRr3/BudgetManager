@@ -18,9 +18,3 @@ GET /transactions/<categoryId>/<transactionId> zwraca konkretna transakcje zalog
 POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i konkretnej kategorii
 PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
-
-
-
-# TODO
-3) zrobic endpointy dla category
-4) zrobic endpointy dla transactions
