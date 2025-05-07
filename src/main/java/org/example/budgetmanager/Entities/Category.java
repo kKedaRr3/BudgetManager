@@ -20,11 +20,6 @@ public class Category {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private AppUser appUser;
-
-    @OneToMany
-    @JoinColumn(name = "transaction_id")
-    private List<Transaction> transactions;
+    private AppUser user;
 
 }

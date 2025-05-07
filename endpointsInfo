@@ -11,3 +11,10 @@ GET POST PUT DELETE /categories/<userId>/<categoryId> modyfikuje konkretna kateg
 GET /transactions/<userId>/<categoryId> zwraca wszystkie transakcje konkretnego uzytkownika i konkretnej kategorii
 
 GET PUT DELETE POST /transactions/<userId>/<categoryId>/<transactionId> modyfikuje konkretna transakcje konkretnego urzytkownika i jego konkretnej kategorii
+
+
+# TODO
+1) zrobic logowanie i rejestracje
+2) zmienic endpointy tak zeby nie bylo userId w adresie URL
+3) zrobic endpointy dla category
+4) zrobic endpointy dla transactions

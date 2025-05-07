@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -24,8 +25,7 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany
-    @JoinColumn(name = "category_id")
-    private List<Category> categories;
+    @ManyToMany(targetEntity = Role.class)
+    private Set<Role> roles;
 
 }
