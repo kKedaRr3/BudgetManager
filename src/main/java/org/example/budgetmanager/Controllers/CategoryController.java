@@ -53,11 +53,14 @@ public class CategoryController {
     }
 
     @PostMapping("")
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody Category category) {
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDto) {
         AppUser user = getLoggedInUser();
-        category.setUser(user);
-        categoryService.save(category);
-        CategoryDto categoryDto = new CategoryDto(category.getId(), category.getName());
+
+        Category categoryToAdd = new Category();
+        categoryToAdd.setName(categoryDto.getName());
+        categoryToAdd.setUser(user);
+
+        categoryService.save(categoryToAdd);
         return ResponseEntity.ok(categoryDto);
     }
 
@@ -92,7 +95,5 @@ public class CategoryController {
         String currentUserEmail = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         return userService.findByEmail(currentUserEmail).orElseThrow(() -> new RuntimeException("User not found"));
     }
-
-
 
 }
