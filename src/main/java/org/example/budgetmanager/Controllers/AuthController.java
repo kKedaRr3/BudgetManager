@@ -3,8 +3,8 @@ package org.example.budgetmanager.Controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.budgetmanager.Configurations.JwtUtils;
-import org.example.budgetmanager.dtos.LoginDto;
-import org.example.budgetmanager.dtos.SignUpDto;
+import org.example.budgetmanager.Dtos.LoginDto;
+import org.example.budgetmanager.Dtos.SignUpDto;
 import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Role;
 import org.example.budgetmanager.Repositories.RoleRepository;

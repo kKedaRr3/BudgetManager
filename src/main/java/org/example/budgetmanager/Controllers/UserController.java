@@ -3,7 +3,7 @@ package org.example.budgetmanager.Controllers;
 import lombok.AllArgsConstructor;
 import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Services.UserService;
-import org.example.budgetmanager.dtos.UserDto;
+import org.example.budgetmanager.Dtos.UserDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

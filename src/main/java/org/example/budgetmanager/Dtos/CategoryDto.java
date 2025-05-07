@@ -1,4 +1,4 @@
-package org.example.budgetmanager.dtos;
+package org.example.budgetmanager.Dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

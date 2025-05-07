@@ -1,4 +1,4 @@
-package org.example.budgetmanager.dtos;
+package org.example.budgetmanager.Dtos;
 
 import lombok.Data;
 

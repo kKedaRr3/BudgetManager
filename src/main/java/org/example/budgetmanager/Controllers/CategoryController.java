@@ -5,13 +5,13 @@ import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Category;
 import org.example.budgetmanager.Services.CategoryService;
 import org.example.budgetmanager.Services.UserService;
-import org.example.budgetmanager.dtos.CategoryDto;
+import org.example.budgetmanager.Dtos.CategoryDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.example.budgetmanager.Utils.AuthUtils.getLoggedInUser;
 
 
 @RestController
@@ -26,7 +26,7 @@ public class CategoryController {
     @GetMapping("")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
 
-        Long userId = getLoggedInUser().getId();
+        Long userId = getLoggedInUser(userService).getId();
 
         var categories = categoryService.getAllCategoriesByUserId(userId).stream().map(category -> new CategoryDto(category.getId(), category.getName())).toList();
         if (categories.isEmpty()) {
@@ -40,7 +40,7 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long categoryId) {
 
-        Long userId = getLoggedInUser().getId();
+        Long userId = getLoggedInUser(userService).getId();
 
         var category = categoryService.getCategoryByUserIdAndId(userId, categoryId).orElse(null);
         if (category == null) {
@@ -54,7 +54,7 @@ public class CategoryController {
 
     @PostMapping("")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody Category category) {
-        AppUser user = getLoggedInUser();
+        AppUser user = getLoggedInUser(userService);
 
         Category categoryToAdd = new Category();
         categoryToAdd.setName(category.getName());
@@ -68,7 +68,7 @@ public class CategoryController {
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
 
-        AppUser user = getLoggedInUser();
+        AppUser user = getLoggedInUser(userService);
         var categoryToUpdate = categoryService.getCategoryByUserIdAndId(user.getId(), categoryId).orElse(null);
         if (categoryToUpdate == null){
             return ResponseEntity.notFound().build();
@@ -83,18 +83,12 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        Category category = categoryService.getCategoryByUserIdAndId(getLoggedInUser().getId(), categoryId).orElse(null);
+        Category category = categoryService.getCategoryByUserIdAndId(getLoggedInUser(userService).getId(), categoryId).orElse(null);
         if (category == null){
             return ResponseEntity.notFound().build();
         }
         categoryService.delete(category);
         return ResponseEntity.noContent().build();
-    }
-
-
-    private AppUser getLoggedInUser(){
-        String currentUserEmail = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-        return userService.findByEmail(currentUserEmail).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
 }
