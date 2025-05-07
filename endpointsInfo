@@ -1,20 +1,26 @@
 🔐 Autoryzacja
-POST   /api/auth/register         - Rejestracja nowego użytkownika
-POST   /api/auth/login            - Logowanie i otrzymanie tokena JWT
+POST   /api/auth/signup         - Rejestracja nowego użytkownika
+POST   /api/auth/signin         - Logowanie i otrzymanie tokena JWT
 
-GET /users zwraca wszystkich uzytkownikow
-GET PUT DELETE /users/<id> operacje na konkretnym urzytkowniku
+GET /api/users zwraca wszystkich uzytkownikow
+GET /api/users/<userId> zwraca konkretnego uzytkwonika
+PUT /api/users/<userId> modyfikuje konkretnego uzytkownika
+DELETE /api/users/<userId> usuwa konkretnego uzytkownika
 
-GET /categories/<userId> zwraca kategorie konkretnrgo urzytkownika
-GET POST PUT DELETE /categories/<userId>/<categoryId> modyfikuje konkretna kategorie konkretnego uzytkoniwka
+GET /api/categories/<userId> zwraca kategorie zalogowanego urzytkownika
+GET /api/categories/<categoryId> zwraca konkretna kategorie zalogowanego uzytkownika
+POST /api/categories dodaje kategorie dla zalogowanego uzytkownika
+PUT /api/categories/<categoryId> modyfikuje konkretna kategorie zalogowanego uzytkownika
+DELETE /api/categories/<categoryId> usuwa konkretna kategorie zalogowanego uzytkownika
 
-GET /transactions/<userId>/<categoryId> zwraca wszystkie transakcje konkretnego uzytkownika i konkretnej kategorii
+GET /transactions/<categoryId> zwraca wszystkie transakcje zalogowanego uzytkownika i konkretnej kategorii
+GET /transactions/<categoryId>/<transactionId> zwraca konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
+POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i konkretnej kategorii
+PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
+DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 
-GET PUT DELETE POST /transactions/<userId>/<categoryId>/<transactionId> modyfikuje konkretna transakcje konkretnego urzytkownika i jego konkretnej kategorii
 
 
 # TODO
-1) zrobic logowanie i rejestracje
-2) zmienic endpointy tak zeby nie bylo userId w adresie URL
 3) zrobic endpointy dla category
 4) zrobic endpointy dla transactions

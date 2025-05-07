@@ -19,8 +19,8 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @GetMapping("/{userId}/{categoryId}")
-    public ResponseEntity<Iterable<Transaction>> getTransaction(@PathVariable String userId, @PathVariable String categoryId) {
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<Iterable<Transaction>> getTransaction(@PathVariable String categoryId) {
 
         return null;
     }
