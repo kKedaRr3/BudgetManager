@@ -6,12 +6,13 @@ import org.example.budgetmanager.Entities.Category;
 import org.example.budgetmanager.Services.CategoryService;
 import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Dtos.CategoryDto;
+import org.example.budgetmanager.Utils.AuthUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.example.budgetmanager.Utils.AuthUtils.getLoggedInUser;
+//import static org.example.budgetmanager.Utils.AuthUtils.getLoggedInUser;
 
 
 @RestController
@@ -23,16 +24,18 @@ public class CategoryController {
 
     private final UserService userService;
 
+    private final AuthUtils authUtils;
+
     @GetMapping("")
     public ResponseEntity<List<CategoryDto>> getAllCategories() {
 
-        Long userId = getLoggedInUser(userService).getId();
+        Long userId = authUtils.getLoggedInUser().getId();
 
         var categories = categoryService.getAllCategoriesByUserId(userId).stream().map(category -> new CategoryDto(category.getId(), category.getName())).toList();
+
         if (categories.isEmpty()) {
             return ResponseEntity.notFound().build();
-        }
-        else{
+        } else {
             return ResponseEntity.ok(categories);
         }
     }
@@ -40,13 +43,12 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable Long categoryId) {
 
-        Long userId = getLoggedInUser(userService).getId();
+        Long userId = authUtils.getLoggedInUser().getId();
 
         var category = categoryService.getCategoryByUserIdAndId(userId, categoryId).orElse(null);
         if (category == null) {
             return ResponseEntity.notFound().build();
-        }
-        else {
+        } else {
             CategoryDto categoryDto = new CategoryDto(category.getId(), category.getName());
             return ResponseEntity.ok(categoryDto);
         }
@@ -54,7 +56,7 @@ public class CategoryController {
 
     @PostMapping("")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody Category category) {
-        AppUser user = getLoggedInUser(userService);
+        AppUser user = authUtils.getLoggedInUser();
 
         Category categoryToAdd = new Category();
         categoryToAdd.setName(category.getName());
@@ -68,9 +70,9 @@ public class CategoryController {
     @PutMapping("/{categoryId}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
 
-        AppUser user = getLoggedInUser(userService);
+        AppUser user = authUtils.getLoggedInUser();
         var categoryToUpdate = categoryService.getCategoryByUserIdAndId(user.getId(), categoryId).orElse(null);
-        if (categoryToUpdate == null){
+        if (categoryToUpdate == null) {
             return ResponseEntity.notFound().build();
         }
 
@@ -83,8 +85,8 @@ public class CategoryController {
 
     @DeleteMapping("/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
-        Category category = categoryService.getCategoryByUserIdAndId(getLoggedInUser(userService).getId(), categoryId).orElse(null);
-        if (category == null){
+        Category category = categoryService.getCategoryByUserIdAndId(authUtils.getLoggedInUser().getId(), categoryId).orElse(null);
+        if (category == null) {
             return ResponseEntity.notFound().build();
         }
         categoryService.delete(category);

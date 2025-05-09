@@ -22,6 +22,8 @@ public class TransactionController {
 
     private final UserService userService;
 
+    private final AuthUtils authUtils;
+
     @GetMapping("/{categoryId}")
     public ResponseEntity<Iterable<TransactionDto>> getAllTransactions(@PathVariable Long categoryId) {
 
@@ -84,7 +86,7 @@ public class TransactionController {
     }
 
     private Category getCategoryByCategoryId(Long categoryId){
-        var user = AuthUtils.getLoggedInUser(userService);
+        var user = authUtils.getLoggedInUser();
         return categoryService.getCategoryByUserIdAndId(user.getId(), categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
     }
 

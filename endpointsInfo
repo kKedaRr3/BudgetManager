@@ -18,3 +18,9 @@ GET /transactions/<categoryId>/<transactionId> zwraca konkretna transakcje zalog
 POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i konkretnej kategorii
 PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
+
+# TODO
+1) Testy jednostkowe
+2) Obsluga wyjatkow
+3) Zabezpieczenie endpointow users urzytkownik moze zmieniac tylko swoje dane lub przerobienie tego
+4) Dodanie admina?
