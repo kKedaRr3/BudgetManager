@@ -3,10 +3,13 @@ package org.example.budgetmanager;
 import org.example.budgetmanager.Configurations.JwtUtils;
 import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Category;
+import org.example.budgetmanager.Entities.Transaction;
 import org.example.budgetmanager.Services.CategoryService;
+import org.example.budgetmanager.Services.TransactionService;
 import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Utils.AuthUtils;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,20 +20,20 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.junit.jupiter.api.Test;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class CategoryControllerTest {
+public class TransactionControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,18 +45,22 @@ public class CategoryControllerTest {
     private AuthUtils authUtils;
 
     @MockitoBean
+    private UserService userService;
+
+    @MockitoBean
     private CategoryService categoryService;
 
     @MockitoBean
-    private UserService userService;
+    private TransactionService transactionService;
 
     private String jwtToken;
 
-    private AppUser appUser;
+    private Category category;
 
     @BeforeEach
     public void setup() {
-        appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null);
+        AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null);
+        category = new Category(1L, "Zywnosc", appUser);
 
         UserDetails userDetails = User.builder()
                 .username("test@example.com")
@@ -64,6 +71,7 @@ public class CategoryControllerTest {
         when(userService.findByEmail(appUser.getEmail())).thenReturn(Optional.of(appUser));
         when(userService.loadUserByUsername("test@example.com")).thenReturn(userDetails);
         when(authUtils.getLoggedInUser()).thenReturn(appUser);
+        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), category.getId())).thenReturn(Optional.of(category));
 
         jwtToken = jwtUtils.generateToken(userDetails);
 
@@ -73,99 +81,103 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldReturnAllCategories() throws Exception {
-
+    public void shouldReturnAllTransactions() throws Exception {
         //given
-        List<Category> categories = List.of(new Category(1L, "Transport", appUser), new Category(2L, "Zywnosc", appUser));
+        List<Transaction> transactions = List.of(new Transaction(1L, 50.0, "Lidl", category), new Transaction(2L, 10.59, "Studenciak", category));
 
         //when
-        when(categoryService.getAllCategoriesByUserId(appUser.getId())).thenReturn(categories);
+        when(transactionService.getAllTransactionsByCategoryId(category.getId())).thenReturn(transactions);
 
         //then
-        mockMvc.perform(get("/api/categories")
+        mockMvc.perform(get("/api/transactions/1")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Transport"));
+                .andExpect(jsonPath("$[0].amount").value(50.0))
+                .andExpect(jsonPath("$[0].description").value("Lidl"));
     }
 
     @Test
-    public void shouldReturnCategoryById() throws Exception {
+    public void shouldReturnTransactionById() throws Exception {
         //given
-        Category category = new Category(2L, "Zywnosc", appUser);
+        Transaction transaction = new Transaction(1L, 50.0, "Lidl", category);
 
         //when
-        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), 2L)).thenReturn(Optional.of(category));
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), 1L)).thenReturn(Optional.of(transaction));
 
         //then
-        mockMvc.perform(get("/api/categories/2")
+        mockMvc.perform(get("/api/transactions/1/1")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Zywnosc"));
+                .andExpect(jsonPath("$.amount").value(50.0))
+                .andExpect(jsonPath("$.description").value("Lidl"));
     }
 
     @Test
-    public void shouldAddCategory() throws Exception {
+    public void shouldAddTransaction() throws Exception {
         //given
-        Category savedCategory = new Category(2L, "Zywnosc", appUser);
+        Transaction savedTransaction = new Transaction(1L, 50.99, "Lidl", category);
 
         //when
-        when(categoryService.save(any(Category.class))).thenReturn(savedCategory);
+        when(transactionService.save(any(Transaction.class))).thenReturn(savedTransaction);
 
         //then
-        mockMvc.perform(post("/api/categories")
+        mockMvc.perform(post("/api/transactions/1")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                     {
-                                      "name": "Zywnosc"
+                                      "amount": "50.99",
+                                      "description": "Lidl"
                                     }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Zywnosc"));
+                .andExpect(jsonPath("$.amount").value(50.99))
+                .andExpect(jsonPath("$.description").value("Lidl"));
     }
 
     @Test
     public void shouldUpdateCategory() throws Exception {
-        // given
-        Long categoryId = 2L;
 
-        Category existingCategory = new Category(categoryId, "OldName", appUser);
-        Category updatedCategory = new Category(categoryId, "UpdatedName", appUser);
+        // given
+        Long transactionId = 2L;
+
+        Transaction existingTransaction = new Transaction(transactionId, 50.99, "OldTransaction", category);
+        Transaction updatedTransaction = new Transaction(transactionId, 60.99, "NewTransaction", category);
 
         // when
-        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
-                .thenReturn(Optional.of(existingCategory));
-        when(categoryService.save(any(Category.class))).thenReturn(updatedCategory);
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), transactionId))
+                .thenReturn(Optional.of(existingTransaction));
+        when(transactionService.save(any(Transaction.class))).thenReturn(updatedTransaction);
 
         // then
-        mockMvc.perform(put("/api/categories/{id}", categoryId)
+        mockMvc.perform(put("/api/transactions/1/{id}", transactionId)
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                     {
-                                      "name": "UpdatedName"
+                                      "amount" : "60.99",
+                                      "description" : "NewTransaction"                               \s
                                     }
-                                """))
+                               \s"""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("UpdatedName"))
-                .andExpect(jsonPath("$.id").value(2));
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.amount").value("60.99"))
+                .andExpect(jsonPath("$.description").value("NewTransaction"));
     }
 
     @Test
-    public void shouldDeleteCategory() throws Exception {
+    public void shouldDeleteTransaction() throws Exception {
         // given
-        Long categoryId = 2L;
-        Category category = new Category(categoryId, "Transport", appUser);
+        Long transactionId = 2L;
+        Transaction transaction = new Transaction(transactionId, 50.99, "Transaction", category);
 
-        // when
-        when(authUtils.getLoggedInUser()).thenReturn(appUser);
-        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
-                .thenReturn(Optional.of(category));
+        //when
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), transactionId)).thenReturn(Optional.of(transaction));
 
-        // then
-        mockMvc.perform(delete("/api/categories/{id}", categoryId)
+        //then
+        mockMvc.perform(delete("/api/transactions/1/{id}", transactionId)
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
     }
@@ -173,17 +185,13 @@ public class CategoryControllerTest {
 
     @Test
     public void shouldReturnHttp403() throws Exception {
-//        given
+        //given
         SecurityContextHolder.clearContext();
-//        when
 
-//        then
-        mockMvc.perform(post("/api/categories")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                  "name" : "Transport"
-                                }"""))
+        //when
+        //then
+        mockMvc.perform(get("/api/transactions/1"))
                 .andExpect(status().isForbidden());
     }
+
 }

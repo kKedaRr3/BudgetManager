@@ -6,6 +6,7 @@ import org.example.budgetmanager.Repositories.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -17,8 +18,8 @@ public class TransactionService {
         return transactionRepository.findAllByCategoryId(categoryId);
     }
 
-    public Transaction getTransactionByCategoryIdAndId(Long categoryId, Long transactionId) {
-        return transactionRepository.findTransactionByCategoryIdAndId(categoryId, transactionId).orElse(null);
+    public Optional<Transaction> getTransactionByCategoryIdAndId(Long categoryId, Long transactionId) {
+        return transactionRepository.findTransactionByCategoryIdAndId(categoryId, transactionId);
     }
 
     public Transaction save(Transaction transaction) {

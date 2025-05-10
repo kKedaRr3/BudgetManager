@@ -6,7 +6,6 @@ import org.example.budgetmanager.Entities.Category;
 import org.example.budgetmanager.Entities.Transaction;
 import org.example.budgetmanager.Services.CategoryService;
 import org.example.budgetmanager.Services.TransactionService;
-import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Utils.AuthUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,6 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     private final CategoryService categoryService;
-
-    private final UserService userService;
 
     private final AuthUtils authUtils;
 
@@ -38,7 +35,7 @@ public class TransactionController {
 
     @GetMapping("/{categoryId}/{transactionId}")
     public ResponseEntity<TransactionDto> getTransaction(@PathVariable Long categoryId, @PathVariable Long transactionId) {
-        var transaction = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId);
+        var transaction = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId).orElse(null);
         if (transaction == null) {
             return ResponseEntity.notFound().build();
         }
@@ -64,7 +61,7 @@ public class TransactionController {
 
     @PutMapping("/{categoryId}/{transactionId}")
     public ResponseEntity<TransactionDto> updateTransaction(@PathVariable Long categoryId, @PathVariable Long transactionId, @RequestBody Transaction transaction){
-        var transactionToUpdate = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId);
+        var transactionToUpdate = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId).orElse(null);
         if (transactionToUpdate == null){
             return ResponseEntity.notFound().build();
         }
@@ -77,7 +74,7 @@ public class TransactionController {
 
     @DeleteMapping("/{categoryId}/{transactionId}")
     public ResponseEntity<Void> deleteTransaction(@PathVariable Long categoryId, @PathVariable Long transactionId){
-        var transaction = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId);
+        var transaction = transactionService.getTransactionByCategoryIdAndId(categoryId, transactionId).orElse(null);
         if (transaction == null){
             return ResponseEntity.notFound().build();
         }
