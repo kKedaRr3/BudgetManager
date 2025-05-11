@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Category;
 import org.example.budgetmanager.Services.CategoryService;
-import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Dtos.CategoryDto;
 import org.example.budgetmanager.Utils.AuthUtils;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,6 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-
-    private final UserService userService;
 
     private final AuthUtils authUtils;
 

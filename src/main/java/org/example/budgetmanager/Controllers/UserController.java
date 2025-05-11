@@ -2,8 +2,10 @@ package org.example.budgetmanager.Controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.budgetmanager.Entities.AppUser;
+import org.example.budgetmanager.Exceptions.ForbiddenOperationException;
 import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Dtos.UserDto;
+import org.example.budgetmanager.Utils.AuthUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    private final AuthUtils authUtils;
 
 //    Useless
     @GetMapping("")
@@ -28,6 +32,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
+
+        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+            throw new ForbiddenOperationException("You can only access your own profile.");
+        }
+
         var user = userService.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -38,6 +47,11 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody AppUser appUser) {
+
+        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+            throw new ForbiddenOperationException("You can only update your own profile.");
+        }
+
         var userToUpdate = userService.findById(id).orElse(null);
         if (userToUpdate == null) {
             return ResponseEntity.notFound().build();
@@ -50,6 +64,11 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+
+        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+            throw new ForbiddenOperationException("You can only delete your own profile.");
+        }
+
         var user = userService.findById(id).orElse(null);
         if (user == null) {
             return ResponseEntity.notFound().build();

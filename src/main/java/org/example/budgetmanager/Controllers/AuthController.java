@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.Map;
 
 @AllArgsConstructor
 @RestController
@@ -47,7 +48,9 @@ public class AuthController {
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwtToken = jwtUtils.generateToken(userService.loadUserByUsername(loginDto.getEmail()));
+        var userDetails = userService.loadUserByUsername(loginDto.getEmail());
+        Map<String, Object> roles = Map.of("Roles", userDetails.getAuthorities());
+        String jwtToken = jwtUtils.generateToken(roles, userDetails);
         return new ResponseEntity<>("Bearer " + jwtToken, HttpStatus.OK);
     }
 

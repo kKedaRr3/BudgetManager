@@ -17,14 +17,7 @@ public class AuthUtils {
 
     public AppUser getLoggedInUser(){
         String currentUserEmail = ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
-//
-        var users = userService.findAll();
-        if (!users.isEmpty()) {
-            for (AppUser user : users) {
-                System.out.println(user.getEmail());
-            }
-        }
-//
+
         Optional<AppUser> user = userService.findByEmail(currentUserEmail);
         if (user.isEmpty()) {
             throw new RuntimeException("User not found");
