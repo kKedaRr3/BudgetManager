@@ -30,18 +30,14 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
-    @Autowired
     private final UserService userService;
 
-    @Autowired
     private final RoleRepository roleRepository;
 
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
+
     private JwtUtils jwtUtils;
 
     @PostMapping("/signin")

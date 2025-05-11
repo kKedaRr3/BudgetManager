@@ -22,5 +22,4 @@ DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zal
 # TODO
 1) Testy jednostkowe
 2) Obsluga wyjatkow
-3) Zabezpieczenie endpointow users urzytkownik moze zmieniac tylko swoje dane lub przerobienie tego
-4) Dodanie admina?
+
