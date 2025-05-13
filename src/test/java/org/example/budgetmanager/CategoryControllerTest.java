@@ -73,7 +73,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldReturnAllCategories() throws Exception {
+    public void getShouldReturnAllCategories() throws Exception {
 
         //given
         List<Category> categories = List.of(new Category(1L, "Transport", appUser), new Category(2L, "Zywnosc", appUser));
@@ -91,7 +91,21 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldReturnCategoryById() throws Exception {
+    public void getAllCategoriesShouldReturnHttp404() throws Exception {
+        //given
+        List<Category> categories = List.of();
+
+        //when
+        when(categoryService.getAllCategoriesByUserId(appUser.getId())).thenReturn(categories);
+
+        //then
+        mockMvc.perform(get("/api/categories")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getShouldReturnCategoryById() throws Exception {
         //given
         Category category = new Category(2L, "Zywnosc", appUser);
 
@@ -106,7 +120,20 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldAddCategory() throws Exception {
+    public void getShouldReturnHttp404() throws Exception {
+        //given
+
+        //when
+        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), 2L)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(get("/api/categories/2")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void postShouldAddCategory() throws Exception {
         //given
         Category savedCategory = new Category(2L, "Zywnosc", appUser);
 
@@ -127,7 +154,7 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldUpdateCategory() throws Exception {
+    public void putShouldUpdateCategory() throws Exception {
         // given
         Long categoryId = 2L;
 
@@ -154,13 +181,33 @@ public class CategoryControllerTest {
     }
 
     @Test
-    public void shouldDeleteCategory() throws Exception {
+    public void putShouldReturnHttp404() throws Exception {
+        // given
+        Long categoryId = 2L;
+
+        // when
+        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
+                .thenReturn(Optional.empty());
+
+        // then
+        mockMvc.perform(put("/api/categories/{id}", categoryId)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                    {
+                                      "name": "UpdatedName"
+                                    }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteShouldDeleteCategory() throws Exception {
         // given
         Long categoryId = 2L;
         Category category = new Category(categoryId, "Transport", appUser);
 
         // when
-        when(authUtils.getLoggedInUser()).thenReturn(appUser);
         when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
                 .thenReturn(Optional.of(category));
 
@@ -170,6 +217,20 @@ public class CategoryControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    public void deleteShouldReturnHttp404() throws Exception {
+        // given
+        Long categoryId = 2L;
+
+        // when
+        when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
+                .thenReturn(Optional.empty());
+
+        // then
+        mockMvc.perform(delete("/api/categories/{id}", categoryId)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     public void shouldReturnHttp403() throws Exception {

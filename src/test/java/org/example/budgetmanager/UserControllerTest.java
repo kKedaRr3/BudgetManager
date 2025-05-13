@@ -1,6 +1,5 @@
 package org.example.budgetmanager;
 
-import org.checkerframework.checker.units.qual.A;
 import org.example.budgetmanager.Configurations.JwtUtils;
 import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Role;
@@ -11,12 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import java.util.List;
@@ -96,7 +98,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnAllUsers() throws Exception {
+    public void getShouldReturnAllUsers() throws Exception {
         //given
         adminSetup();
         List<AppUser> appUsers = List.of(new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null), new AppUser(2L, "Piotr", "Nowak", "piotr@example.com", "password", null));
@@ -106,7 +108,7 @@ public class UserControllerTest {
 
         //then
         mockMvc.perform(get("/api/users")
-                .header("Authorization", "Bearer " + jwtToken))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
@@ -117,7 +119,22 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldReturnUser() throws Exception {
+    public void getAllUsersShouldReturnHttp404() throws Exception {
+        //given
+        adminSetup();
+        List<AppUser> appUsers = List.of();
+
+        //when
+        when(userService.findAll()).thenReturn(appUsers);
+
+        //then
+        mockMvc.perform(get("/api/users")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getShouldReturnUser() throws Exception {
         //given
         AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null);
 
@@ -126,13 +143,166 @@ public class UserControllerTest {
 
         //then
         mockMvc.perform(get("/api/users/1")
-                .header("Authorization", "Bearer " + jwtToken))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.email").value("jan@example.com"));
+    }
+
+    @Test
+    public void getShouldReturnHttp403() throws Exception {
+        //given
+        Long userId = 1L;
+
+        //when
+        when(userService.findById(userId)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(get("/api/users/{id}", userId)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void putShouldUpdateUser() throws Exception {
+        //given
+        Long userId = 1L;
+        AppUser existingUser = new AppUser(userId, "existing", "existing", "test@gmail.com", "password", null);
+        AppUser updatedUser = new AppUser(userId, "updated", "updated", "test@gmail.com", "updated", null);
+
+        //when
+        when(userService.findById(userId)).thenReturn(Optional.of(existingUser));
+        when(userService.save(any(AppUser.class))).thenReturn(updatedUser);
+
+        //then
+        mockMvc.perform(put("/api/users/1")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                    {
+                                      "firstName": "updated",
+                                      "lastName": "updated",
+                                      "email": "test@gmail.com",
+                                      "password": "updated"
+                                    }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.firstName").value("updated"))
+                .andExpect(jsonPath("$.lastName").value("updated"))
+                .andExpect(jsonPath("$.email").value("test@gmail.com"));
 
     }
 
-//    TODO make more tests
+    @Test
+    public void putShouldReturnHttp404() throws Exception {
+        //given
+        Long userId = 1L;
 
+        //when
+        when(userService.findById(userId)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(put("/api/users/{id}", userId)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                    {
+                                      "firstName": "updated",
+                                      "lastName": "updated",
+                                      "email": "test@gmail.com",
+                                      "password": "updated"
+                                    }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    public void deleteShouldDeleteUser() throws Exception {
+        //given
+        Long userId = 1L;
+        AppUser appUser = new AppUser(userId, "test", "test", "test@gmail.com", "password", null);
+
+        //when
+        when(userService.findById(userId)).thenReturn(Optional.of(appUser));
+
+        //then
+        mockMvc.perform(delete("/api/users/{id}", userId)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteShouldReturnHttp404() throws Exception {
+        //given
+        Long userId = 1L;
+
+        //when
+        when(userService.findById(userId)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(delete("/api/users/{id}", userId)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getShouldReturnHttp403BecauseIdsDiffer() throws Exception {
+        //given
+        //Logged-in user's ID is 1
+
+        //when
+        //then
+        mockMvc.perform(get("/api/users/3")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    public void getAllUsersShouldReturnHttp403() throws Exception {
+        //given
+        //Logged-in user is not admin
+
+        //when
+        //then
+        mockMvc.perform(get("/api/users")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    public void putShouldReturnHttp403BecauseIdsDiffer() throws Exception {
+        //given
+        //Logged-in user's ID is 1
+
+        //when
+        //then
+        mockMvc.perform(put("/api/users/3")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                    {
+                                      "firstName": "updated",
+                                      "lastName": "updated",
+                                      "email": "test@gmail.com",
+                                      "password": "updated"
+                                    }
+                                """))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void deleteShouldReturnHttp403BecauseIdsDiffer() throws Exception {
+        //given
+        //Logged-in user's ID is 1
+
+        //when
+        //then
+        mockMvc.perform(delete("/api/users/3")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isForbidden());
+    }
 }

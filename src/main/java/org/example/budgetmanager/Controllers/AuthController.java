@@ -9,7 +9,6 @@ import org.example.budgetmanager.Entities.AppUser;
 import org.example.budgetmanager.Entities.Role;
 import org.example.budgetmanager.Repositories.RoleRepository;
 import org.example.budgetmanager.Services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,6 +41,9 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+        if (!userService.existsByEmail(loginDto.getEmail())) {
+            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+        }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         var userDetails = userService.loadUserByUsername(loginDto.getEmail());

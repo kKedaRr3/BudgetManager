@@ -81,7 +81,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void shouldReturnAllTransactions() throws Exception {
+    public void getShouldReturnAllTransactions() throws Exception {
         //given
         List<Transaction> transactions = List.of(new Transaction(1L, 50.0, "Lidl", category), new Transaction(2L, 10.59, "Studenciak", category));
 
@@ -99,7 +99,21 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void shouldReturnTransactionById() throws Exception {
+    public void getAllTransactionsShouldReturnHttp404() throws Exception {
+        //given
+        List<Transaction> transactions = List.of();
+
+        //when
+        when(transactionService.getAllTransactionsByCategoryId(category.getId())).thenReturn(transactions);
+
+        //then
+        mockMvc.perform(get("/api/transactions/1")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void getShouldReturnTransactionById() throws Exception {
         //given
         Transaction transaction = new Transaction(1L, 50.0, "Lidl", category);
 
@@ -115,7 +129,21 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void shouldAddTransaction() throws Exception {
+    public void getShouldReturnHttp404() throws Exception {
+        //given
+        Long transactionId = 1L;
+
+        //when
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), transactionId)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(get("/api/transactions/1/1")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void postShouldAddTransaction() throws Exception {
         //given
         Transaction savedTransaction = new Transaction(1L, 50.99, "Lidl", category);
 
@@ -138,7 +166,7 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void shouldUpdateCategory() throws Exception {
+    public void putShouldUpdateCategory() throws Exception {
 
         // given
         Long transactionId = 2L;
@@ -168,7 +196,30 @@ public class TransactionControllerTest {
     }
 
     @Test
-    public void shouldDeleteTransaction() throws Exception {
+    public void putShouldReturnHttp404() throws Exception {
+
+        // given
+        Long transactionId = 2L;
+
+        // when
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), transactionId))
+                .thenReturn(Optional.empty());
+
+        // then
+        mockMvc.perform(put("/api/transactions/1/{id}", transactionId)
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                    {
+                                      "amount" : "60.99",
+                                      "description" : "NewTransaction"                               \s
+                                    }
+                               \s"""))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteShouldDeleteTransaction() throws Exception {
         // given
         Long transactionId = 2L;
         Transaction transaction = new Transaction(transactionId, 50.99, "Transaction", category);
@@ -182,6 +233,19 @@ public class TransactionControllerTest {
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    public void deleteShouldReturnHttp404() throws Exception {
+        // given
+        Long transactionId = 2L;
+
+        //when
+        when(transactionService.getTransactionByCategoryIdAndId(category.getId(), transactionId)).thenReturn(Optional.empty());
+
+        //then
+        mockMvc.perform(delete("/api/transactions/1/{id}", transactionId)
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     public void shouldReturnHttp403() throws Exception {
