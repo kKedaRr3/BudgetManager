@@ -20,7 +20,6 @@ public class UserController {
 
     private final AuthUtils authUtils;
 
-//    Useless
     @GetMapping("")
     public ResponseEntity<List<UserDto>> getUsers() {
         var userList = userService.findAll().stream().map(user -> new UserDto(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail())).toList();
@@ -33,7 +32,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
 
-        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+        if (!authUtils.getLoggedInUser().getId().equals(id) && authUtils.getLoggedInUser().getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             throw new ForbiddenOperationException("You can only access your own profile.");
         }
 
@@ -48,7 +47,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody AppUser appUser) {
 
-        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+        if (!authUtils.getLoggedInUser().getId().equals(id) && authUtils.getLoggedInUser().getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             throw new ForbiddenOperationException("You can only update your own profile.");
         }
 
@@ -65,7 +64,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 
-        if (!authUtils.getLoggedInUser().getId().equals(id)) {
+        if (!authUtils.getLoggedInUser().getId().equals(id) && authUtils.getLoggedInUser().getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             throw new ForbiddenOperationException("You can only delete your own profile.");
         }
 

@@ -1,4 +1,4 @@
-🔐 Autoryzacja
+Autoryzacja
 POST   /api/auth/signup         - Rejestracja nowego użytkownika
 POST   /api/auth/signin         - Logowanie i otrzymanie tokena JWT
 
@@ -7,7 +7,7 @@ GET /api/users/<userId> zwraca konkretnego uzytkwonika
 PUT /api/users/<userId> modyfikuje konkretnego uzytkownika
 DELETE /api/users/<userId> usuwa konkretnego uzytkownika
 
-GET /api/categories/<userId> zwraca kategorie zalogowanego urzytkownika
+GET /api/categories zwraca kategorie zalogowanego urzytkownika
 GET /api/categories/<categoryId> zwraca konkretna kategorie zalogowanego uzytkownika
 POST /api/categories dodaje kategorie dla zalogowanego uzytkownika
 PUT /api/categories/<categoryId> modyfikuje konkretna kategorie zalogowanego uzytkownika
@@ -18,8 +18,4 @@ GET /transactions/<categoryId>/<transactionId> zwraca konkretna transakcje zalog
 POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i konkretnej kategorii
 PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
-
-# TODO
-1) Testy jednostkowe
-2) Obsluga wyjatkow
 
