@@ -7,6 +7,7 @@ import org.example.budgetmanager.Services.UserService;
 import org.example.budgetmanager.Dtos.UserDto;
 import org.example.budgetmanager.Utils.AuthUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,7 +56,19 @@ public class UserController {
         if (userToUpdate == null) {
             return ResponseEntity.notFound().build();
         }
+
+        if (appUser.getPassword() != null) {
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            appUser.setPassword(bCryptPasswordEncoder.encode(appUser.getPassword()));
+        }
+        else {
+            appUser.setPassword(userToUpdate.getPassword());
+        }
         appUser.setId(id);
+        appUser.setRoles(userToUpdate.getRoles());
+        appUser.setEmail(userToUpdate.getEmail());
+        appUser.setCategories(userToUpdate.getCategories());
+
         userService.save(appUser);
         UserDto userDto = new UserDto(appUser.getId(), appUser.getFirstName(), appUser.getLastName(), appUser.getEmail());
         return ResponseEntity.ok(userDto);

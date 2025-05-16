@@ -47,8 +47,9 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         var userDetails = userService.loadUserByUsername(loginDto.getEmail());
-        Map<String, Object> roles = Map.of("Roles", userDetails.getAuthorities());
-        String jwtToken = jwtUtils.generateToken(roles, userDetails);
+        Long id = userService.findByEmail(loginDto.getEmail()).get().getId();
+        Map<String, Object> otherClaims = Map.of("Roles", userDetails.getAuthorities(), "id", id);
+        String jwtToken = jwtUtils.generateToken(otherClaims, userDetails);
         return new ResponseEntity<>(Map.of("token","Bearer " + jwtToken), HttpStatus.OK);
     }
 
