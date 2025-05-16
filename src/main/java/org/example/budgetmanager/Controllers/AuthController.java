@@ -40,22 +40,22 @@ public class AuthController {
     private JwtUtils jwtUtils;
 
     @PostMapping("/signin")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<Map<String, String>> authenticateUser(@RequestBody LoginDto loginDto) {
         if (!userService.existsByEmail(loginDto.getEmail())) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(Map.of("message", "Invalid credentials"), HttpStatus.UNAUTHORIZED);
         }
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         var userDetails = userService.loadUserByUsername(loginDto.getEmail());
         Map<String, Object> roles = Map.of("Roles", userDetails.getAuthorities());
         String jwtToken = jwtUtils.generateToken(roles, userDetails);
-        return new ResponseEntity<>("Bearer " + jwtToken, HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("token","Bearer " + jwtToken), HttpStatus.OK);
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto) {
         if (userService.existsByEmail(signUpDto.getEmail())) {
-            return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
+            return new ResponseEntity<>(Map.of("message", "User already exists"), HttpStatus.CONFLICT);
         }
 
         AppUser user = new AppUser();
@@ -69,7 +69,7 @@ public class AuthController {
 
         userService.save(user);
 
-        return new ResponseEntity<>("User created successfully", HttpStatus.OK);
+        return new ResponseEntity<>(Map.of("message", "User created successfully"), HttpStatus.OK);
     }
 
 }

@@ -19,3 +19,7 @@ POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i
 PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
 
+
+
+//TODO
+1) dodac usuwanie transakcji gdy usuwana jest kategoria

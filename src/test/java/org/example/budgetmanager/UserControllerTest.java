@@ -52,7 +52,7 @@ public class UserControllerTest {
         SecurityContextHolder.clearContext();
 
         Set<Role> roles = Set.of(new Role(2L, "ROLE_ADMIN"));
-        AppUser appUser = new AppUser(1L, "admin", "admin", "admin@test.com", "admin", roles);
+        AppUser appUser = new AppUser(1L, "admin", "admin", "admin@test.com", "admin", roles, null);
 
         UserDetails userDetails = User.builder()
                 .username("admin@test.com")
@@ -76,7 +76,7 @@ public class UserControllerTest {
     @BeforeEach
     public void setup() {
         Set<Role> roles = Set.of(new Role(1L, "ROLE_USER"));
-        AppUser appUser = new AppUser(1L, "user", "user", "user@test.com", "user", roles);
+        AppUser appUser = new AppUser(1L, "user", "user", "user@test.com", "user", roles, null);
 
         UserDetails userDetails = User.builder()
                 .username("user@test.com")
@@ -101,7 +101,7 @@ public class UserControllerTest {
     public void getShouldReturnAllUsers() throws Exception {
         //given
         adminSetup();
-        List<AppUser> appUsers = List.of(new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null), new AppUser(2L, "Piotr", "Nowak", "piotr@example.com", "password", null));
+        List<AppUser> appUsers = List.of(new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null, null), new AppUser(2L, "Piotr", "Nowak", "piotr@example.com", "password", null, null));
 
         //when
         when(userService.findAll()).thenReturn(appUsers);
@@ -136,7 +136,7 @@ public class UserControllerTest {
     @Test
     public void getShouldReturnUser() throws Exception {
         //given
-        AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null);
+        AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "jan@example.com", "password", null, null);
 
         //when
         when(userService.findById(appUser.getId())).thenReturn(Optional.of(appUser));
@@ -167,8 +167,8 @@ public class UserControllerTest {
     public void putShouldUpdateUser() throws Exception {
         //given
         Long userId = 1L;
-        AppUser existingUser = new AppUser(userId, "existing", "existing", "test@gmail.com", "password", null);
-        AppUser updatedUser = new AppUser(userId, "updated", "updated", "test@gmail.com", "updated", null);
+        AppUser existingUser = new AppUser(userId, "existing", "existing", "test@gmail.com", "password", null, null);
+        AppUser updatedUser = new AppUser(userId, "updated", "updated", "test@gmail.com", "updated", null, null);
 
         //when
         when(userService.findById(userId)).thenReturn(Optional.of(existingUser));
@@ -222,7 +222,7 @@ public class UserControllerTest {
     public void deleteShouldDeleteUser() throws Exception {
         //given
         Long userId = 1L;
-        AppUser appUser = new AppUser(userId, "test", "test", "test@gmail.com", "password", null);
+        AppUser appUser = new AppUser(userId, "test", "test", "test@gmail.com", "password", null, null);
 
         //when
         when(userService.findById(userId)).thenReturn(Optional.of(appUser));

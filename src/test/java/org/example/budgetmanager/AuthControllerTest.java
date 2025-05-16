@@ -18,6 +18,7 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +41,7 @@ public class AuthControllerTest {
     @Test
     public void signupShouldRegisterUser() throws Exception {
         //given
-        AppUser appUser = new AppUser(1L, "Test", "Test", "test@example.com", "password", null);
+        AppUser appUser = new AppUser(1L, "Test", "Test", "test@example.com", "password", null, null);
 
         //when
         when(userService.existsByEmail(appUser.getEmail())).thenReturn(false);
@@ -58,13 +59,14 @@ public class AuthControllerTest {
                                     }
                                 """))
                 .andExpect(status().isOk())
-                .andExpect(content().string("User created successfully"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message").value("User created successfully"));
     }
 
     @Test
     public void signupShouldNotRegisterUserBecauseUserExists() throws Exception {
         //given
-        AppUser appUser = new AppUser(1L, "Test", "Test", "test@example.com", "password", null);
+        AppUser appUser = new AppUser(1L, "Test", "Test", "test@example.com", "password", null, null);
 
         //when
         when(userService.existsByEmail(appUser.getEmail())).thenReturn(true);
@@ -81,7 +83,7 @@ public class AuthControllerTest {
                                     }
                                 """))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("User already exists"));
+                .andExpect(jsonPath("$.message").value("User already exists"));
     }
 
     @Test
@@ -108,7 +110,8 @@ public class AuthControllerTest {
                             }
                         """))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Bearer " + jwtUtils.generateToken(Collections.singletonMap("Roles", userDetails.getAuthorities()), userDetails)));
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.token").value("Bearer " + jwtUtils.generateToken(Collections.singletonMap("Roles", userDetails.getAuthorities()), userDetails)));
     }
 
     @Test
@@ -134,7 +137,7 @@ public class AuthControllerTest {
                             }
                         """))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Invalid credentials"));
+                .andExpect(jsonPath("$.message").value("Invalid credentials"));
     }
 
 }

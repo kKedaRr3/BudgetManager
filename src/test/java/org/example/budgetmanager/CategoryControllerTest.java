@@ -53,7 +53,7 @@ public class CategoryControllerTest {
 
     @BeforeEach
     public void setup() {
-        appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null);
+        appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null, null);
 
         UserDetails userDetails = User.builder()
                 .username("test@example.com")
@@ -76,7 +76,7 @@ public class CategoryControllerTest {
     public void getShouldReturnAllCategories() throws Exception {
 
         //given
-        List<Category> categories = List.of(new Category(1L, "Transport", appUser), new Category(2L, "Zywnosc", appUser));
+        List<Category> categories = List.of(new Category(1L, "Transport", appUser, null), new Category(2L, "Zywnosc", appUser, null));
 
         //when
         when(categoryService.getAllCategoriesByUserId(appUser.getId())).thenReturn(categories);
@@ -107,7 +107,7 @@ public class CategoryControllerTest {
     @Test
     public void getShouldReturnCategoryById() throws Exception {
         //given
-        Category category = new Category(2L, "Zywnosc", appUser);
+        Category category = new Category(2L, "Zywnosc", appUser, null);
 
         //when
         when(categoryService.getCategoryByUserIdAndId(appUser.getId(), 2L)).thenReturn(Optional.of(category));
@@ -135,7 +135,7 @@ public class CategoryControllerTest {
     @Test
     public void postShouldAddCategory() throws Exception {
         //given
-        Category savedCategory = new Category(2L, "Zywnosc", appUser);
+        Category savedCategory = new Category(2L, "Zywnosc", appUser, null);
 
         //when
         when(categoryService.save(any(Category.class))).thenReturn(savedCategory);
@@ -158,8 +158,8 @@ public class CategoryControllerTest {
         // given
         Long categoryId = 2L;
 
-        Category existingCategory = new Category(categoryId, "OldName", appUser);
-        Category updatedCategory = new Category(categoryId, "UpdatedName", appUser);
+        Category existingCategory = new Category(categoryId, "OldName", appUser, null);
+        Category updatedCategory = new Category(categoryId, "UpdatedName", appUser, null);
 
         // when
         when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))
@@ -205,7 +205,7 @@ public class CategoryControllerTest {
     public void deleteShouldDeleteCategory() throws Exception {
         // given
         Long categoryId = 2L;
-        Category category = new Category(categoryId, "Transport", appUser);
+        Category category = new Category(categoryId, "Transport", appUser, null);
 
         // when
         when(categoryService.getCategoryByUserIdAndId(appUser.getId(), categoryId))

@@ -59,8 +59,8 @@ public class TransactionControllerTest {
 
     @BeforeEach
     public void setup() {
-        AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null);
-        category = new Category(1L, "Zywnosc", appUser);
+        AppUser appUser = new AppUser(1L, "Jan", "Kowalski", "test@example.com", "password", null, null);
+        category = new Category(1L, "Zywnosc", appUser, null);
 
         UserDetails userDetails = User.builder()
                 .username("test@example.com")
