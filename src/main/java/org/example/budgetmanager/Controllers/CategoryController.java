@@ -75,6 +75,7 @@ public class CategoryController {
 
         category.setId(categoryId);
         category.setUser(user);
+        category.setTransactions(categoryToUpdate.getTransactions());
         categoryService.save(category);
         CategoryDto categoryDto = new CategoryDto(category.getId(), category.getName());
         return ResponseEntity.ok(categoryDto);
