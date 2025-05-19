@@ -1,0 +1,50 @@
+<div class="transaction-container">
+    <div class="transaction-top">
+        <h3 class="transaction-header">Transakcje</h3>
+  
+        <ul>
+            <li *ngFor="let t of transactions; let i = index" class="transaction-item">
+                
+                <div *ngIf="editedIndex === i" class="edit-form-inline">
+                    <input [(ngModel)]="editTransactionData.description" placeholder="Description" />
+                    <input type="number" [(ngModel)]="editTransactionData.amount" placeholder="Amount" />
+                    
+                    <div class="transaction-actions">
+                    <button (click)="saveEdit(i)">💾</button>
+                    <button (click)="cancelEdit()">❌</button>
+                    </div>
+                </div>
+            
+                <div *ngIf="editedIndex !== i" class="transaction-view">
+                    <span>{{ t.description }} – {{ t.amount }} zł</span>
+                    <div class="transaction-actions">
+                    <button (click)="startEdit(i)">✏️</button>
+                    <button (click)="deleteTransaction(i)">🗑️</button>
+                    </div>
+                </div>
+            </li>
+          </ul>
+    </div>
+    
+    <div class="transaction-bottom">
+        <h3>Add Transaction</h3>
+        <form (ngSubmit)="addTransaction()" class="transaction-form">
+        <input
+            type="text"
+            [(ngModel)]="newTransaction.description"
+            name="description"
+            placeholder="Description"
+            required
+        />
+        <input
+            type="number"
+            [(ngModel)]="newTransaction.amount"
+            name="amount"
+            placeholder="Amount"
+            required
+        />
+        <button type="submit">Add</button>
+        </form>
+    </div>
+  </div>
+  

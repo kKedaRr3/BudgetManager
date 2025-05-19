@@ -1,0 +1,35 @@
+<div 
+     class="category-tile"
+     [class.expanded]="expanded"
+     (click)="expandClicked.emit(category.id)">
+
+  <button *ngIf="expanded" class="close-btn" (click)="onClose($event)">×</button>
+
+  <ng-container *ngIf="expanded">
+    <div class="category-expanded-top">
+      <div *ngIf="!isEditing" class="category-title-expanded">
+        {{ category.name }}
+      </div>
+
+    
+      <form *ngIf="isEditing" (submit)="saveEdit($event)" class="edit-form">
+        <input [(ngModel)]="editedName"
+              name="editedName"
+              required
+              placeholder="Nazwa kategorii"
+              class="edit-input" />
+        <button type="submit">Save</button>
+        <button type="button" (click)="cancelEdit($event)">Cancel</button>
+      </form>
+
+      <div class="edit-controls">
+        <button (click)="startEdit($event)">Edit</button>
+        <button (click)="confirmDelete($event)">Delete</button>
+      </div>
+    </div>
+
+    <app-transaction [categoryId]="category.id"></app-transaction>
+  </ng-container>
+
+  <h3 class="category-title-collapsed" *ngIf="!expanded">{{ category.name }}</h3>
+</div>

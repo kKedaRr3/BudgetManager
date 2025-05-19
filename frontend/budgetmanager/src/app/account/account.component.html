@@ -1,0 +1,52 @@
+<div class="navbar">
+    <p>Budget Manager</p>
+    <p>Account Management</p>
+    <button (click)="goToDashboard()" class="dashboard-btn">Back to dashboard</button>
+</div>
+
+
+
+<div class="account-form">
+  <form (ngSubmit)="updateAccount()" #accountForm="ngForm" class="edit-form">
+
+    <label>First Name:</label>
+    <input type="text" [(ngModel)]="user.firstName" name="firstName"/>
+
+    <label>Last Name:</label>
+    <input type="text" [(ngModel)]="user.lastName" name="lastName"/>
+
+    <label>New Password:</label>
+    <input
+      type="password"
+      [(ngModel)]="user.password"
+      name="password"
+      placeholder="Leave blank if no change"
+    />
+
+    <label>Repeat Password:</label>
+    <input
+      type="password"
+      [(ngModel)]="confirmPassword"
+      name="confirmPassword"
+      placeholder="Re-enter the password"
+    />
+
+    <div *ngIf="passwordsDoNotMatch" style="color: red; font-size: 13px;">
+      Passwords do not match.
+    </div>
+
+    <button class="save-btn" type="submit">Save Changes</button>
+  </form>
+
+  <hr />
+
+  <button (click)="confirmDelete()" class="delete-btn">Delete Account</button>
+</div>
+
+<div *ngIf="showConfirmDelete" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+    <button (click)="deleteAccount()">Yes, delete</button>
+    <button (click)="showConfirmDelete = false">Cancel</button>
+  </div>
+</div>

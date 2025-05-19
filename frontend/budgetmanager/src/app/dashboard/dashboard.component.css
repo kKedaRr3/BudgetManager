@@ -1,0 +1,94 @@
+.add-category-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 20px;
+}
+  
+.show-form-button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+  
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    position: relative;
+    margin-top: 10px;
+}
+  
+.form-wrapper.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+  
+form input {
+    padding: 6px;
+    margin-right: 8px;
+}
+  
+form button {
+    padding: 6px 10px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+.category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-around;
+  margin-bottom: 30px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: #2e7d32; 
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 20px;
+  font-weight: bold;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.navbar > p {
+  margin-left: 20px;
+}
+
+.navbar-right {
+  display: flex;
+  justify-content: space-between;
+  min-width: 150px;
+  font-size: 15px;
+  margin-right: 20px;
+}
+
+.logout-button {
+  cursor: pointer;
+  color: rgb(255, 255, 255);
+}
+
+.logout-button:hover {
+  text-decoration: underline;
+  color: white;
+}

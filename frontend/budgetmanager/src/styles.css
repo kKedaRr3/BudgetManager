@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    padding: 0%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+app-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+app-dashboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+app-category {
+    min-width: 250px;
+    min-height: 150px;
+    width: fit-content;
+}
+
+app-transaction {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+app-login {
+    position: relative;
+    top: -20%;
+}
+

@@ -1,0 +1,17 @@
+<h2>Enter your personal details</h2>
+<form (ngSubmit)="register()">
+  <label>Email:</label>
+  <input [(ngModel)]="username" name="username" required>
+  <label>First Name:</label>
+  <input [(ngModel)]="firstName" name="firstName" required>
+  <label>Last Name:</label>
+  <input [(ngModel)]="lastName" name="lastName" required>
+  <label>Password:</label>
+  <input type="password" [(ngModel)]="password" name="password" required>
+  <button type="submit">Register</button>
+</form>
+<div *ngIf="error" class="error-message" style="color:red">{{ error }}</div>
+
+<div class="backToLoginButton">
+    <a routerLink="/login">Back to login</a>
+</div>

@@ -1,0 +1,37 @@
+<div class="navbar">
+  <p>Budget Manager</p>
+  <div class="navbar-right">
+    <p (click)="accountMenagement()" class="logout-button"> Account</p>
+    <p (click)="logout()" class="logout-button" >Logout</p>
+  </div>
+</div>
+
+<h1>Your categories</h1>
+<div class="category-grid">
+  <app-category
+    *ngFor="let category of categories"
+    [category]="category"
+    [expanded]="expandedCategoryId === category.id"
+    (expandClicked)="onCategoryExpand($event)"
+    (deleteClicked)="onCategoryDeleted($event)">
+    
+  </app-category>
+</div>
+
+<div class="add-category-container" (mouseenter)="showForm = true" (mouseleave)="showForm = false">
+  <button class="show-form-button">+ Add category</button>
+
+  <div class="form-wrapper" [class.visible]="showForm">
+    <form (ngSubmit)="addCategory()">
+      <input
+        type="text"
+        [(ngModel)]="newCategoryName"
+        name="name"
+        placeholder="Category Name"
+        required
+      />
+      <button type="submit">Add</button>
+    </form>
+  </div>
+</div>
+
