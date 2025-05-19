@@ -4,7 +4,7 @@ BudgetManager is a full-stack web application designed to help users manage thei
 
 ## Features
 
-- **User Authentication**: Secure user registration and login functionality.
+- **JWT Authentication**: Secure registration and login using JSON Web Tokens.
 - **Transaction Management**: Add, edit, and delete income and expense transactions.
 - **Categorization**: Organize transactions into customizable categories.
 - **Account Management**: Change own account details. 
