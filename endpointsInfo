@@ -1,20 +1,23 @@
-Autoryzacja
-POST   /api/auth/signup         - Rejestracja nowego użytkownika
-POST   /api/auth/signin         - Logowanie i otrzymanie tokena JWT
+Authentication
+POST   /api/auth/signup         - Register a new user
+POST   /api/auth/signin         - Log in and receive a JWT token
 
-GET /api/users zwraca wszystkich uzytkownikow
-GET /api/users/<userId> zwraca konkretnego uzytkwonika
-PUT /api/users/<userId> modyfikuje konkretnego uzytkownika
-DELETE /api/users/<userId> usuwa konkretnego uzytkownika
+Users
+GET    /api/users                        - Returns all users
+GET    /api/users/<userId>              - Returns a specific user
+PUT    /api/users/<userId>              - Updates a specific user
+DELETE /api/users/<userId>              - Deletes a specific user
 
-GET /api/categories zwraca kategorie zalogowanego urzytkownika
-GET /api/categories/<categoryId> zwraca konkretna kategorie zalogowanego uzytkownika
-POST /api/categories dodaje kategorie dla zalogowanego uzytkownika
-PUT /api/categories/<categoryId> modyfikuje konkretna kategorie zalogowanego uzytkownika
-DELETE /api/categories/<categoryId> usuwa konkretna kategorie zalogowanego uzytkownika
+Categories
+GET    /api/categories                  - Returns all categories of the authenticated user
+GET    /api/categories/<categoryId>     - Returns a specific category of the authenticated user
+POST   /api/categories                  - Adds a new category for the authenticated user
+PUT    /api/categories/<categoryId>     - Updates a specific category of the authenticated user
+DELETE /api/categories/<categoryId>     - Deletes a specific category of the authenticated user
 
-GET /transactions/<categoryId> zwraca wszystkie transakcje zalogowanego uzytkownika i konkretnej kategorii
-GET /transactions/<categoryId>/<transactionId> zwraca konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
-POST /transactions/<categoryId> dodaje transakcje dla zalogowanego uzytkownika i konkretnej kategorii
-PUT /transactions/<categoryId>/<transactionId> modyfikuje konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
-DELETE /transactions/<categoryId>/<transactionId> usuwa konkretna transakcje zalogowanego uzytkownika i konkretnej kategorii
+Transactions
+GET    /transactions/<categoryId>                         - Returns all transactions of the authenticated user in the specified category
+GET    /transactions/<categoryId>/<transactionId>         - Returns a specific transaction of the authenticated user in the specified category
+POST   /transactions/<categoryId>                         - Adds a transaction for the authenticated user in the specified category
+PUT    /transactions/<categoryId>/<transactionId>         - Updates a specific transaction of the authenticated user in the specified category
+DELETE /transactions/<categoryId>/<transactionId>         - Deletes a specific transaction of the authenticated user in the specified category

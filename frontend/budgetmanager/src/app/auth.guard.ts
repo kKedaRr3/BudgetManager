@@ -8,7 +8,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Jeśli chcesz mieć przekierowanie, musisz użyć inject()
   const router = inject(Router);
   router.navigate(['/login']);
   return false;
